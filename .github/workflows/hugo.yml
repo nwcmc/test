@@ -1,0 +1,42 @@
+name: github pages
+
+on:
+  repository_dispatch:
+    types: [dispatch2]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    
+    steps:
+      - name: Fetch private repo
+        uses: actions/checkout@v2
+        with:
+          repository: wncmc/priv
+          submodules: true  # Fetch Hugo themes
+          #fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          token: ${{ secrets.my_pat }}
+
+      - name: Use Node.js 8.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 8.x
+      
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.70.0'
+          extended: true
+      - run: node update-pages.js
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: wncmc/test
+          publish_branch: gh_pages
+          publish_dir: ./public
+          full_commit_message: Update ${{ github.event.head_commit.id }}
