@@ -1,8 +1,7 @@
 name: github pages
 
 on:
-  repository_dispatch:
-    types: [dispatch2]
+  push
 
 jobs:
   deploy:
