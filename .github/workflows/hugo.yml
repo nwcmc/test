@@ -15,18 +15,12 @@ jobs:
           submodules: true  # Fetch Hugo themes
           #fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
           token: ${{ secrets.my_pat }}
-
-      - name: Use Node.js 8.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 8.x
       
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: '0.70.0'
           extended: true
-      - run: node update-pages.js
 
       - name: Build
         run: hugo --minify
